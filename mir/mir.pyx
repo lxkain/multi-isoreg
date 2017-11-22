@@ -39,7 +39,7 @@ cdef _multi_isoreg(double *seq,
         if err[i] < mine:
             mine = err[i]
             arg = i
-    return mine, r_[minlen + arg, opt[arg]] if opt[arg] is not None else nparray([minlen + arg])  # because empty lists cause float casting
+    return mine, r_[minlen + arg, opt[arg]] if opt[arg] is not None else nparray([minlen + arg])
 
 
 def multi_isoreg(seq: np.ndarray,
