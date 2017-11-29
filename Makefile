@@ -5,7 +5,7 @@ dummy:
 	rm -rf build
 
 clean:
-	rm *.so
-	rm *.html
-	rm mir.c
+	rm mir/*.so
+	rm mir/*.html
+	rm mir/mir.c
 	rm -rf build

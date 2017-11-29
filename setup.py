@@ -5,12 +5,10 @@ import Cython.Compiler.Options
 
 import numpy as np
 
-Cython.Compiler.Options.annotate = True
-
-print(np.get_include())
+Cython.Compiler.Options.annotate = False
 
 extensions = [
-    Extension("mir", ["mir.pyx", "mir_c.c"],
+    Extension("mir/mir", ["mir/mir.pyx", "mir/mir_c.c"],
               include_dirs=[np.get_include()],
               extra_compile_args=['-w']),
 ]
