@@ -59,6 +59,8 @@ def multi_isoreg(seq: np.ndarray,
         assert (obj.flags.c_contiguous or obj.flags.f_contiguous), "must have contiguous storage"
         assert obj.flags.aligned, "must be aligned"
 
+    if minlen < 2:
+        raise NotImplementedError('for now, minlen must be > 1')
     hat : np.ndarray = np.empty_like(seq)  # allocate scratch space
     for obj in [seq, hat]:
         check_ndarray(obj)

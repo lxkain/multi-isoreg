@@ -6,7 +6,7 @@ This allows finding shapes like up-down (one peak), or down-up-down, or up-down-
 
 ## Installation
 
-Typing `make` will compile the code. Afterwards, have a look at `test.py` for usage.
+Change the directory to the `mir` subdirectory and type `make`. Afterwards, have a look at `main.py` for usage.
 
 
 ## Example

@@ -10,7 +10,7 @@ class TestCreateShape(TestCase):
         for num in range(1, 5):
             for minlen in range(1, 5):
                 for N in range(20, 40):
-                    for t in range(200):
+                    for t in range(100):
                         seq, dir, inf = create_shape(num=num,
                                                      minlen=minlen,
                                                      N=N,
@@ -29,7 +29,7 @@ class TestCreateShape(TestCase):
         for num in range(1, 5):
             for minlen in range(1, 5):
                 for N in range(20, 40):
-                    for t in range(200):
+                    for t in range(100):
                         seq, dir, inf = create_shape(num=num,
                                                      minlen=minlen,
                                                      N=N,

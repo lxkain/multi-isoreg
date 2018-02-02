@@ -13,7 +13,11 @@ def create_shape(num: int=3,
     # TODO: check input validity
     seq = np.empty(N)
     direction = int(np.random.rand(1) > 0.5) * 2 - 1
-    inflection = sorted((np.random.permutation((N - 2 * minlen) // minlen) * minlen + minlen)[:num])
+    inflection = sorted(np.random.permutation((N - minlen) // minlen) * minlen + minlen)
+    if len(inflection) < num:
+        raise ValueError('N is too short')
+    else:
+        inflection = inflection[:num]
 
     dir = direction  # local direction
     seq[:inflection[0]] = dir
@@ -36,23 +40,27 @@ def seq_inflection2subseq(seq, inflection):
 
 
 if __name__ == '__main__':
-    P = 2
-    num = P + (P - 1)
-    N = 4
-    minlen = 1
-    seq, direction, inflection = create_shape(num, minlen=minlen, N=N, sigma=0.0)
-    print(f"direction = {direction}")
-    print(f"inflection = {inflection}")
-    for i, s in enumerate(seq):
-        print(f"{i:2} : {s} {'*' if i in inflection else ''}")
-    print("------")
+    if 0:  # generate
+        P = 2
+        num = P + (P - 1)
+        N = 4
+        minlen = 1
+        seq, direction, inflection = create_shape(num, minlen=minlen, N=N, sigma=0.0)
+        print(f"direction = {direction}")
+        print(f"inflection = {inflection}")
+        for i, s in enumerate(seq):
+            print(f"{i:2} : {s} {'*' if i in inflection else ''}")
+        print("------")
+    else:  # provide
+        # TODO: this scenario triggers a bug
+        num = 3
+        minlen = 1
+        N = 20
+        seq = np.array([0., -1., 0., -1., 0., 1., 2.])
+        direction = -1
+        #inf1 = [1, 2, 3]
+        #inf2 = [1 3 5]
 
-    # num = 2
-    # minlen = 1
-    # direction = -1
-    # inf1 = [18, 19]
-    # seq = [0. - 1. - 2. - 3. - 4. - 5. - 6. - 7. - 8. - 9. - 10. - 11. - 12. - 13. - 14.
-    #        - 15. - 16. - 17. - 18. - 17. - 18.]
 
     if 1:
         if 0:  # profile
