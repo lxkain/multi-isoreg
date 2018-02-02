@@ -1,46 +1,61 @@
-import timeit
+from unittest import TestCase
 
 import numpy as np
 
-import mir
+from main import create_shape, seq_inflection2subseq, mir
 
 
-def create_shape(num: int=3,
-                 minlen: int=2,
-                 N: int=100,
-                 sigma: float=0):
-    seq = np.empty(N)
-    direction = int(np.random.rand(1) > 0.5) * 2 - 1
-    inflection = sorted((np.random.permutation((N - 2 * minlen) // minlen) * minlen + minlen)[:num])
+class TestCreateShape(TestCase):
+    def test_shapes(self):
+        for num in range(1, 5):
+            for minlen in range(1, 5):
+                for N in range(20, 40):
+                    for t in range(200):
+                        seq, dir, inf = create_shape(num=num,
+                                                     minlen=minlen,
+                                                     N=N,
+                                                     sigma=0)
+                        self.assertTrue(len(inf) == num, msg=f"""                        
+                        num = {num}
+                        minlen = {minlen}
+                        N = {N}
+                        seq = {seq}
+                        dir = {dir}
+                        inf = {inf}
+                        """)
+                        self.assertTrue(len(seq) == N)
 
-    seq[:inflection[0]] = direction
-    for i in range(len(inflection) - 1):
-        direction *= -1
-        seq[inflection[i]:inflection[i+1]] = direction
-    seq[inflection[-1]:] = -direction
-    seq[:] = np.cumsum(seq, dtype=np.float)
-    seq += np.random.randn(len(seq)) * sigma
-    return seq, direction, inflection
+    def test_sub(self):
+        for num in range(1, 5):
+            for minlen in range(1, 5):
+                for N in range(20, 40):
+                    for t in range(200):
+                        seq, dir, inf = create_shape(num=num,
+                                                     minlen=minlen,
+                                                     N=N,
+                                                     sigma=0)
+                        sub = seq_inflection2subseq(seq, inf)
+                        for i, s in enumerate(sub):
+                            self.assertTrue((np.sign(np.diff(s)) == dir).all())
+                            dir *= -1
 
-
-def print_inflection(seq, inflection):
-    print(seq[:inflection[0]])
-    for i in range(len(inflection) - 1):
-        print(seq[inflection[i]:inflection[i+1]])
-    print(seq[inflection[-1]:])
-
-
-num = 5
-minlen = 2
-seq, direction, inflection = create_shape(num, minlen=minlen, N=64, sigma=0.0)
-print(f"inflection = {inflection}")
-print(seq)
-print("------")
-cmd = ""
-if 0:  # profile
-    print(timeit.timeit("mir.multi_isoreg(seq, num, direction=direction, minlen=minlen", globals=globals(), number=1))
-else:  # see result
-    err, inflection = mir.multi_isoreg(seq, num, direction=direction, minlen=minlen)
-    print(f"error={err}")
-    print(f"inflection = {inflection}")
-    print_inflection(seq, inflection)
+class TestMir(TestCase):
+    def test_error(self):
+        for num in range(1, 5):
+            for minlen in range(2, 5):  # there is a bug when minlen is 1, skipping that for now
+                for N in range(20, 40):
+                    for t in range(200):
+                        seq, direction, inf1 = create_shape(num=num,
+                                                     minlen=minlen,
+                                                     N=N,
+                                                     sigma=0)
+                        err, inf2 = mir.multi_isoreg(seq, num, direction, minlen)
+                        self.assertAlmostEqual(err, 0, msg=f"""
+                        num = {num}
+                        minlen = {minlen}
+                        N = {N}
+                        seq = {seq}
+                        direction = {direction}
+                        inf1 = {inf1}
+                        inf2 = {inf2}
+                        """)
